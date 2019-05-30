@@ -14,3 +14,5 @@ echo "python /usr/src/python-imager/main.py "\$1" "\$2" "\$3 > "/usr/src/python-
 chmod -f 775 /usr/src/python-imager/run.sh
 ln -f -s /usr/src/python-imager/run.sh /usr/bin/python-imager
 chmod -f 775 /usr/bin/python-imager
+
+echo "Installation complete!"

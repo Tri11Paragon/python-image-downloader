@@ -16,6 +16,7 @@ def downloadlots(dirct, limit, terms):
 	print(paths)
 
 def ma(dird, limit, terms):
+	las.append(dird)
 	output = [dI for dI in os.listdir(dird) if os.path.isdir(os.path.join(dird,dI))]
 	for f in output:
 		ot = [dF for dF in os.listdir(os.path.join(dird,f)) if os.path.isdir(os.path.join(dird, f, dF))]
@@ -61,22 +62,31 @@ def frun(dird, limit, terms, loadLog):
 		writelog(dird)
 		exit()
 
+def printHelp():
+	print("Format is python-imager (DIR) (# OF IMAGES)")
+
 if __name__ == '__main__':
-	missing = ""
-	dird = ""
-	terms = ""
+	amount = sys.argv[2]
+	dird = sys.argv[1]
+	terms = sys.argv[3]
+	
+	if len(sys.argv) < 3:
+		printHelp()
+		exit()
+	
 	print(sys.argv)
 	if sys.argv[1] == "":
-		print("Hey format is: dir, limit")
+		printHelp()
 		exit()
 		
 	if sys.argv[2] == "":
-		print("Hey format is: dir, limit")
+		printHelp()
 		exit()
+		
 	try:
 		data=[]
-		if os.path.exists("names.txt"):
-			with open('names.txt', 'r') as f:
+		if os.path.exists(dird + "/" + "names.txt"):
+			with open(dird + "/" +'names.txt', 'r') as f:
 				data = f.readlines()
 			
 			print(data)
@@ -88,10 +98,10 @@ if __name__ == '__main__':
 			print(terms)
 			print("\n")
 			
-			frun(sys.argv[1], sys.argv[2], terms, True)
+			frun(dird, amount, terms, True)
 		else:
 			print("names.txt not found. Assuming commandline usage.")
-			frun(sys.argv[1], sys.argv[2], sys.argv[3], True)
+			frun(dird, amount, terms, True)
 		
 	except Exception as e:
 		print(e)
