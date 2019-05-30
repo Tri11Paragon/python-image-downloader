@@ -8,6 +8,7 @@ fi
 
 #not the best way to do this, but this is my first time.
 #give me a break
+rm -fr /usr/src/python-imager/
 mkdir /usr/src/python-imager/
 cp -f main.py /usr/src/python-imager/main.py
 echo "python /usr/src/python-imager/main.py "\$1" "\$2" "\$3 > "/usr/src/python-imager/run.sh"

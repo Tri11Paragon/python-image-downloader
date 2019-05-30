@@ -3,12 +3,12 @@ import os
 import sys
 
 response = google_images_download.googleimagesdownload()
-las = []
+foundFolders = []
 
 def looplas(limit, terms):
-	for p in las:
+	for p in foundFolders:
 		downloadlots(p, limit, terms)
-		las.remove(p)
+		foundFolders.remove(p)
 
 def downloadlots(dirct, limit, terms):
 	arguments = {"keywords":terms,"limit":limit,"print_urls":True,"output_directory":dirct, "no_directory":True}
@@ -16,23 +16,23 @@ def downloadlots(dirct, limit, terms):
 	print(paths)
 
 def ma(dird, limit, terms):
-	las.append(dird)
+	foundFolders.append(dird)
 	output = [dI for dI in os.listdir(dird) if os.path.isdir(os.path.join(dird,dI))]
 	for f in output:
 		ot = [dF for dF in os.listdir(os.path.join(dird,f)) if os.path.isdir(os.path.join(dird, f, dF))]
-		las.append(os.path.join(dird, f))
-		for d in ot:
-			oy = [dD for dD in os.listdir(os.path.join(dird,f,d)) if os.path.isdir(os.path.join(dird, f, d, dD))]
-			las.append(os.path.join(dird, f, d))
+		foundFolders.append(os.path.join(dird, f))
+		for f2 in ot:
+			oy = [dD for dD in os.listdir(os.path.join(dird,f,f2)) if os.path.isdir(os.path.join(dird, f, f2, dD))]
+			foundFolders.append(os.path.join(dird, f, f2))
 			for s in oy:
-				las.append(os.path.join(dird, f, d, s))
+				foundFolders.append(os.path.join(dird, f, f2, s))
 	
 	looplas(limit, terms)
 
 def writelog(dird):
 	logfile = os.path.join(dird, "logs.txt")
 	f = open(logfile, "w+")
-	for ob in las:
+	for ob in foundFolders:
 		f.write(ob + "\n")
 
 def frun(dird, limit, terms, loadLog):
@@ -45,11 +45,11 @@ def frun(dird, limit, terms, loadLog):
 				if f.mode == "r":
 					le = f.readlines()
 					for x in le:
-						las.append(x.rstrip())
-				print las
+						foundFolders.append(x.rstrip())
+				print foundFolders
 				looplas(limit, terms)
 					
-				if len(las) >= 1:
+				if len(foundFolders) >= 1:
 					looplas(limit, terms)
 			else:
 				print "\nHey! Log file does not exist! \nRunning without loading log!\n"
@@ -65,28 +65,60 @@ def frun(dird, limit, terms, loadLog):
 def printHelp():
 	print("Format is python-imager (DIR) (# OF IMAGES)")
 
-if __name__ == '__main__':
-	amount = sys.argv[2]
-	dird = sys.argv[1]
-	terms = sys.argv[3]
-	
-	if len(sys.argv) < 3:
-		printHelp()
-		exit()
-	
-	print(sys.argv)
-	if sys.argv[1] == "":
-		printHelp()
-		exit()
+dird = ""
+count = "1"
+rands = False
+terms = ""
+
+if __name__ == "__main__":
+	argsLength = len(sys.argv)
+	for p in range(0, argsLength):
+		arg = sys.argv[p]
+		if(arg == "--dir" or arg == "-d"):
+			if p + 1 <= argsLength:
+				dird = sys.argv[p + 1]
+				if dird is None:
+					print(arg + " called but information was not found!")
+					exit()
+			else:
+				print(arg + " called but information was not found!")
+				exit()
+		if(arg == "--count" or arg == "-c"):
+			if p + 1 < argsLength:
+				count = sys.argv[p + 1]
+				if count is None:
+					print(arg + " called but information was not found!")
+					exit()
+			else:
+				print(arg + " called but information was not found!")
+				exit()
+		if(arg == "--rand" or arg == "-r" or arg == "--random"):
+			if p + 1 < argsLength:
+				t = sys.argv[p + 1]
+				if t is None:
+					print(arg + " called but information was not found!")
+					exit()
+				if t.lower() == "true":
+					rands = True
+				if t.lower() == "false":
+					rands = False
+			else:
+				print(arg + " called but information was not found!")
+				exit()
 		
-	if sys.argv[2] == "":
-		printHelp()
+	if (dird == ""):
+		print("Directroy not set! Please set with --dir or -d!")
 		exit()
-		
+	
+	print("Directory: " + dird)
+	print("Count: " + count)
+	print("Use Randoms: " + str(rands))
+
 	try:
 		data=[]
-		if os.path.exists(dird + "/" + "names.txt"):
-			with open(dird + "/" +'names.txt', 'r') as f:
+		namesPath=os.path.join(dird, "names.txt")
+		if os.path.exists(namesPath):
+			with open(namesPath, 'r') as f:
 				data = f.readlines()
 			
 			print(data)
@@ -98,18 +130,14 @@ if __name__ == '__main__':
 			print(terms)
 			print("\n")
 			
-			frun(dird, amount, terms, True)
+			frun(dird, count, terms, True)
 		else:
 			print("names.txt not found. Assuming commandline usage.")
-			frun(dird, amount, terms, True)
+			frun(dird, count, terms, True)
 		
 	except Exception as e:
 		print(e)
-		print("\n")
-		
 		exit()
-	
-	
 	#if sys.argv[1] == "--log":
 	#	frun(sys.argv[2], sys.argv[4], sys.argv[3], True)
 	#else:
