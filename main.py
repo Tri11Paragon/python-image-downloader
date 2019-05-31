@@ -63,7 +63,7 @@ def frun(dird, limit, terms, loadLog):
 		exit()
 
 def printHelp():
-	print("Format is python-imager (DIR) (# OF IMAGES)")
+	
 
 dird = ""
 count = "1"
@@ -72,11 +72,12 @@ terms = ""
 
 if __name__ == "__main__":
 	argsLength = len(sys.argv)
+	# this does way too many checks for nulls and may be useless but its good to be sure!
 	for p in range(0, argsLength):
 		arg = sys.argv[p]
 		if(arg == "--dir" or arg == "-d"):
 			if p + 1 <= argsLength:
-				dird = sys.argv[p + 1]
+				dird = sys.argv[p + 1].replace("'", '').replace("\"", '')
 				if dird is None:
 					print(arg + " called but information was not found!")
 					exit()
@@ -85,7 +86,7 @@ if __name__ == "__main__":
 				exit()
 		if(arg == "--count" or arg == "-c"):
 			if p + 1 < argsLength:
-				count = sys.argv[p + 1]
+				count = sys.argv[p + 1].replace("'", '').replace("\"", '')
 				if count is None:
 					print(arg + " called but information was not found!")
 					exit()
@@ -94,7 +95,7 @@ if __name__ == "__main__":
 				exit()
 		if(arg == "--rand" or arg == "-r" or arg == "--random"):
 			if p + 1 < argsLength:
-				t = sys.argv[p + 1]
+				t = sys.argv[p + 1].replace("'", '').replace("\"", '')
 				if t is None:
 					print(arg + " called but information was not found!")
 					exit()
@@ -105,15 +106,19 @@ if __name__ == "__main__":
 			else:
 				print(arg + " called but information was not found!")
 				exit()
-		
+		if(arg == "--terms" or arg == "-t" or arg == "--term"):
+			if p + 1 < argsLength:
+				terms = sys.argv[p + 1].replace("'", '').replace("\"", '')
+				if terms is None:
+					print(arg + " called but information was not found!")
+					exit()
+			else:
+				print(arg + " called but information was not found!")
+				exit()
 	if (dird == ""):
 		print("Directroy not set! Please set with --dir or -d!")
 		exit()
 	
-	print("Directory: " + dird)
-	print("Count: " + count)
-	print("Use Randoms: " + str(rands))
-
 	try:
 		data=[]
 		namesPath=os.path.join(dird, "names.txt")
@@ -122,22 +127,22 @@ if __name__ == "__main__":
 				data = f.readlines()
 			
 			print(data)
-			print("\n")
 			
 			for s in data:
 				terms = terms + s.replace("\n", '') + ", "
 			
-			print(terms)
-			print("\n")
-			
-			frun(dird, count, terms, True)
 		else:
 			print("names.txt not found. Assuming commandline usage.")
-			frun(dird, count, terms, True)
-		
 	except Exception as e:
 		print(e)
 		exit()
+		
+	print("Directory: " + dird)
+	print("Count: " + count)
+	print("Use Randoms: " + str(rands))
+	print("Terms: " + terms)
+	
+	frun(dird, count, terms, True)
 	#if sys.argv[1] == "--log":
 	#	frun(sys.argv[2], sys.argv[4], sys.argv[3], True)
 	#else:
