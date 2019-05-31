@@ -1,6 +1,8 @@
 from google_images_download import google_images_download   #importing the library
 import os
 import sys
+import random
+import time
 
 response = google_images_download.googleimagesdownload()
 foundFolders = []
@@ -63,11 +65,13 @@ def frun(dird, limit, terms, loadLog):
 		exit()
 
 def printHelp():
-	
+	print("Python imager has a modular input.")
+	print("")
 
 dird = ""
 count = "1"
-rands = False
+rands = "3"
+enableRands = False
 terms = ""
 
 if __name__ == "__main__":
@@ -87,6 +91,8 @@ if __name__ == "__main__":
 		if(arg == "--count" or arg == "-c"):
 			if p + 1 < argsLength:
 				count = sys.argv[p + 1].replace("'", '').replace("\"", '')
+				print(count)
+				print("Hello!")
 				if count is None:
 					print(arg + " called but information was not found!")
 					exit()
@@ -95,14 +101,11 @@ if __name__ == "__main__":
 				exit()
 		if(arg == "--rand" or arg == "-r" or arg == "--random"):
 			if p + 1 < argsLength:
-				t = sys.argv[p + 1].replace("'", '').replace("\"", '')
-				if t is None:
+				rands = sys.argv[p + 1].replace("'", '').replace("\"", '')
+				enableRands = True
+				if rands is None:
 					print(arg + " called but information was not found!")
 					exit()
-				if t.lower() == "true":
-					rands = True
-				if t.lower() == "false":
-					rands = False
 			else:
 				print(arg + " called but information was not found!")
 				exit()
@@ -117,6 +120,7 @@ if __name__ == "__main__":
 				exit()
 	if (dird == ""):
 		print("Directroy not set! Please set with --dir or -d!")
+		printHelp()
 		exit()
 	
 	try:
@@ -139,8 +143,31 @@ if __name__ == "__main__":
 		
 	print("Directory: " + dird)
 	print("Count: " + count)
-	print("Use Randoms: " + str(rands))
+	print("Use randoms: " + str(enableRands) + ". Number of randoms: " + rands)
 	print("Terms: " + terms)
+	
+	# Please ignore how bad this code is.
+	if enableRands:
+		rndAmount = int(rands)
+		strs = terms.split(",")
+		amountOfTermsToGenerate = len(strs)
+		termsd = [None] * amountOfTermsToGenerate
+		random.seed(int(round(time.time() * 1000)))
+		for p in range(0, amountOfTermsToGenerate):
+			finalStr = ""
+			for i in range(0, rndAmount):
+				finalStr = finalStr + strs[random.randint(0, len(strs) - 1)] + " "
+			finalStr[:-1]
+			termsd[p] = finalStr
+		
+		finalTerms = ""
+		
+		for i in range(0, amountOfTermsToGenerate):
+			finalTerms = finalTerms + termsd[i] + ", "
+		
+		finalTerms[:-1]
+		terms = finalTerms
+		print(terms)
 	
 	frun(dird, count, terms, True)
 	#if sys.argv[1] == "--log":
