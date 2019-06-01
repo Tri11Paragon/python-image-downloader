@@ -1,3 +1,6 @@
+#!/usr/bin/python2
+#Should work with both python2 and python3(i've tested with both, but mostly have tested python2
+
 from google_images_download import google_images_download   #importing the library
 import os
 import sys
@@ -7,12 +10,47 @@ import time
 response = google_images_download.googleimagesdownload()
 foundFolders = []
 
+dird = ""
+count = "1"
+rands = "3"
+enableRands = False
+terms = ""
+masterTerms = ""
+includedTerm = ""
+
 def looplas(limit, terms):
 	for p in foundFolders:
 		downloadlots(p, limit, terms)
 		foundFolders.remove(p)
 
 def downloadlots(dirct, limit, terms):
+	if enableRands:
+		rndAmount = int(rands)
+		strs = masterTerms.split(",")
+		amountOfTermsToGenerate = len(strs)
+		termsd = [None] * amountOfTermsToGenerate
+		random.seed(int(round(time.time() * 1000)))
+		for p in range(0, amountOfTermsToGenerate):
+			finalStr = ""
+			for i in range(0, rndAmount):
+				finalStr = finalStr + strs[random.randint(0, len(strs) - 1)] + " "
+			finalStr[:-1]
+			finalStr = finalStr + includedTerm
+			termsd[p] = finalStr
+		
+		finalTerms = ""
+		
+		for i in range(0, amountOfTermsToGenerate):
+			finalTerms = finalTerms + termsd[i] + ", "
+		
+		finalTerms[:-1]
+		terms = finalTerms
+		print(terms)
+	else:
+		terms = masterTerms
+	
+	terms = terms + ", " + includedTerm
+	
 	arguments = {"keywords":terms,"limit":limit,"print_urls":True,"output_directory":dirct, "no_directory":True}
 	paths = response.download(arguments)
 	print(paths)
@@ -42,25 +80,25 @@ def frun(dird, limit, terms, loadLog):
 		if loadLog:
 			logfile = os.path.join(dird, "logs.txt")
 			if os.path.exists(logfile):
-				print "\nAttempting to reload log file\n"
+				print("\nAttempting to reload log file\n")
 				f = open(logfile, "r")
 				if f.mode == "r":
 					le = f.readlines()
 					for x in le:
 						foundFolders.append(x.rstrip())
-				print foundFolders
+				print(foundFolders)
 				looplas(limit, terms)
 					
 				if len(foundFolders) >= 1:
 					looplas(limit, terms)
 			else:
-				print "\nHey! Log file does not exist! \nRunning without loading log!\n"
+				print("\nHey! Log file does not exist! \nRunning without loading log!\n")
 				frun(dird, limit, terms, False)
 		else:
 			ma(dird, limit, terms)
 		writelog(dird)
 	except KeyboardInterrupt:
-		print "\nInterrupted... Writing leftovers to log file."
+		print("\nInterrupted... Writing leftovers to log file.")
 		writelog(dird)
 		exit()
 
@@ -68,108 +106,128 @@ def printHelp():
 	print("Python imager has a modular input.")
 	print("")
 
-dird = ""
-count = "1"
-rands = "3"
-enableRands = False
-terms = ""
-
 if __name__ == "__main__":
-	argsLength = len(sys.argv)
-	# this does way too many checks for nulls and may be useless but its good to be sure!
-	for p in range(0, argsLength):
-		arg = sys.argv[p]
-		if(arg == "--dir" or arg == "-d"):
-			if p + 1 <= argsLength:
-				dird = sys.argv[p + 1].replace("'", '').replace("\"", '')
-				if dird is None:
-					print(arg + " called but information was not found!")
-					exit()
-			else:
-				print(arg + " called but information was not found!")
-				exit()
-		if(arg == "--count" or arg == "-c"):
-			if p + 1 < argsLength:
-				count = sys.argv[p + 1].replace("'", '').replace("\"", '')
-				print(count)
-				print("Hello!")
-				if count is None:
-					print(arg + " called but information was not found!")
-					exit()
-			else:
-				print(arg + " called but information was not found!")
-				exit()
-		if(arg == "--rand" or arg == "-r" or arg == "--random"):
-			if p + 1 < argsLength:
-				rands = sys.argv[p + 1].replace("'", '').replace("\"", '')
-				enableRands = True
-				if rands is None:
-					print(arg + " called but information was not found!")
-					exit()
-			else:
-				print(arg + " called but information was not found!")
-				exit()
-		if(arg == "--terms" or arg == "-t" or arg == "--term"):
-			if p + 1 < argsLength:
-				terms = sys.argv[p + 1].replace("'", '').replace("\"", '')
-				if terms is None:
-					print(arg + " called but information was not found!")
-					exit()
-			else:
-				print(arg + " called but information was not found!")
-				exit()
-	if (dird == ""):
-		print("Directroy not set! Please set with --dir or -d!")
-		printHelp()
-		exit()
-	
 	try:
-		data=[]
-		namesPath=os.path.join(dird, "names.txt")
-		if os.path.exists(namesPath):
-			with open(namesPath, 'r') as f:
-				data = f.readlines()
+		argsLength = len(sys.argv)
+		# this does way too many checks for nulls and may be useless but its good to be sure!
+		for p in range(0, argsLength):
+			arg = sys.argv[p]
+			if(arg == "--dir" or arg == "-d"):
+				if p + 1 <= argsLength:
+					dird = sys.argv[p + 1].replace("'", '').replace("\"", '')
+					if dird is None:
+						print(arg + " called but information was not found!")
+						exit()
+				else:
+					print(arg + " called but information was not found!")
+					exit()
+			if(arg == "--count" or arg == "-c"):
+				if p + 1 < argsLength:
+					count = sys.argv[p + 1].replace("'", '').replace("\"", '')
+					print(count)
+					print("Hello!")
+					if count is None:
+						print(arg + " called but information was not found!")
+						exit()
+				else:
+					print(arg + " called but information was not found!")
+					exit()
+			if(arg == "--rand" or arg == "-r" or arg == "--random"):
+				if p + 1 < argsLength:
+					rands = sys.argv[p + 1].replace("'", '').replace("\"", '')
+					enableRands = True
+					if rands is None:
+						print(arg + " called but information was not found!")
+						exit()
+				else:
+					print(arg + " called but information was not found!")
+					exit()
+			if(arg == "--terms" or arg == "-t" or arg == "--term"):
+				if p + 1 < argsLength:
+					terms = sys.argv[p + 1].replace("'", '').replace("\"", '')
+					if terms is None:
+						print(arg + " called but information was not found!")
+						exit()
+				else:
+					print(arg + " called but information was not found!")
+					exit()
+			if(arg == "--garn" or arg == "-g"):
+				if p + 1 < argsLength:
+					includedTerm = sys.argv[p + 1].replace("'", '').replace("\"", '')
+					if includedTerm is None:
+						print(arg + " called but information was not found!")
+						exit()
+				else:
+					print(arg + " called but information was not found!")
+					exit()
+		if (dird == ""):
+			print("Directroy not set! Please set with --dir or -d!")
+			printHelp()
+			exit()
+		
+		try:
+			data=[]
+			namesPath=os.path.join(dird, "names.txt")
+			if os.path.exists(namesPath):
+				with open(namesPath, 'r') as f:
+					data = f.readlines()
+				
+				print(data)
+				
+				for s in data:
+					masterTerms = masterTerms + s.replace("\n", '') + ", "
+				
+			else:
+				if os.path.exists("names.txt"):
+					with open("names.txt", 'r') as f:
+						data = f.readlines()
+					
+					print(data)
+					
+					for s in data:
+						masterTerms = masterTerms + s.replace("\n", '') + ", "
+					
+				else:
+					print("names.txt not found. Assuming commandline usage.")
+	
+		except Exception as e:
+			print(e)
+			exit()
 			
-			print(data)
+		print("Directory: " + dird)
+		print("Count: " + count)
+		print("Use randoms: " + str(enableRands) + ". Number of randoms: " + rands)
+		print("Terms: " + masterTerms)
+		
+		# Please ignore how bad this code is.
+		if enableRands:
+			rndAmount = int(rands)
+			strs = masterTerms.split(",")
+			amountOfTermsToGenerate = len(strs)
+			termsd = [None] * amountOfTermsToGenerate
+			random.seed(int(round(time.time() * 1000)))
+			for p in range(0, amountOfTermsToGenerate):
+				finalStr = ""
+				for i in range(0, rndAmount):
+					finalStr = finalStr + strs[random.randint(0, len(strs) - 1)] + " "
+				finalStr[:-1]
+				termsd[p] = finalStr
 			
-			for s in data:
-				terms = terms + s.replace("\n", '') + ", "
+			finalTerms = ""
 			
+			for i in range(0, amountOfTermsToGenerate):
+				finalTerms = finalTerms + termsd[i] + ", "
+			
+			finalTerms[:-1]
+			terms = finalTerms
+			print(terms)
 		else:
-			print("names.txt not found. Assuming commandline usage.")
-	except Exception as e:
-		print(e)
+			terms = masterTerms
+		frun(dird, count, terms, True)
+	except KeyboardInterrupt:
+		print("\nInterrupted... Writing leftovers to log file.")
+		writelog(dird)
 		exit()
-		
-	print("Directory: " + dird)
-	print("Count: " + count)
-	print("Use randoms: " + str(enableRands) + ". Number of randoms: " + rands)
-	print("Terms: " + terms)
-	
-	# Please ignore how bad this code is.
-	if enableRands:
-		rndAmount = int(rands)
-		strs = terms.split(",")
-		amountOfTermsToGenerate = len(strs)
-		termsd = [None] * amountOfTermsToGenerate
-		random.seed(int(round(time.time() * 1000)))
-		for p in range(0, amountOfTermsToGenerate):
-			finalStr = ""
-			for i in range(0, rndAmount):
-				finalStr = finalStr + strs[random.randint(0, len(strs) - 1)] + " "
-			finalStr[:-1]
-			termsd[p] = finalStr
-		
-		finalTerms = ""
-		
-		for i in range(0, amountOfTermsToGenerate):
-			finalTerms = finalTerms + termsd[i] + ", "
-		
-		finalTerms[:-1]
-		terms = finalTerms
-		print(terms)
-	
-	frun(dird, count, terms, True)
 	#if sys.argv[1] == "--log":
 	#	frun(sys.argv[2], sys.argv[4], sys.argv[3], True)
 	#else:
