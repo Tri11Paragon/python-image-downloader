@@ -17,6 +17,8 @@ enableRands = False
 terms = ""
 masterTerms = ""
 includedTerm = ""
+load_log=True
+save_log=True
 
 def looplas(limit, terms):
 	for p in foundFolders:
@@ -57,23 +59,32 @@ def downloadlots(dirct, limit, terms):
 
 def ma(dird, limit, terms):
 	foundFolders.append(dird)
-	output = [dI for dI in os.listdir(dird) if os.path.isdir(os.path.join(dird,dI))]
-	for f in output:
-		ot = [dF for dF in os.listdir(os.path.join(dird,f)) if os.path.isdir(os.path.join(dird, f, dF))]
-		foundFolders.append(os.path.join(dird, f))
-		for f2 in ot:
-			oy = [dD for dD in os.listdir(os.path.join(dird,f,f2)) if os.path.isdir(os.path.join(dird, f, f2, dD))]
-			foundFolders.append(os.path.join(dird, f, f2))
-			for s in oy:
-				foundFolders.append(os.path.join(dird, f, f2, s))
+	
+	for i in range(0, 10):
+		for f in foundFolders:
+			if (os.path.isdir(f)):
+				output = [dI for dI in os.listdir(f) if os.path.isdir(os.path.join(f,dI))]
+				for f1 in output:
+					foundFolders.append(os.path.join(f, f1))
+	
+	#output = [dI for dI in os.listdir(dird) if os.path.isdir(os.path.join(dird,dI))]
+	#for f in output:
+	#	ot = [dF for dF in os.listdir(os.path.join(dird,f)) if os.path.isdir(os.path.join(dird, f, dF))]
+	#	foundFolders.append(os.path.join(dird, f))
+	#	for f2 in ot:
+	#		oy = [dD for dD in os.listdir(os.path.join(dird,f,f2)) if os.path.isdir(os.path.join(dird, f, f2, dD))]
+	#		foundFolders.append(os.path.join(dird, f, f2))
+	#		for s in oy:
+	#			foundFolders.append(os.path.join(dird, f, f2, s))
 	
 	looplas(limit, terms)
 
 def writelog(dird):
-	logfile = os.path.join(dird, "logs.txt")
-	f = open(logfile, "w+")
-	for ob in foundFolders:
-		f.write(ob + "\n")
+	if save_log:
+		logfile = os.path.join(dird, "logs.txt")
+		f = open(logfile, "w+")
+		for ob in foundFolders:
+			f.write(ob + "\n")
 
 def frun(dird, limit, terms, loadLog):
 	try:
@@ -92,18 +103,18 @@ def frun(dird, limit, terms, loadLog):
 				if len(foundFolders) >= 1:
 					looplas(limit, terms)
 			else:
-				print("\nHey! Log file does not exist! \nRunning without loading log!\n")
+				print("\n Hey! Log file does not exist! \nRunning without loading log!\n")
 				frun(dird, limit, terms, False)
 		else:
 			ma(dird, limit, terms)
 		writelog(dird)
 	except KeyboardInterrupt:
-		print("\nInterrupted... Writing leftovers to log file.")
+		print("\n Interrupted... Writing leftovers to log file.")
 		writelog(dird)
 		exit()
 
 def printHelp():
-	print("Python imager has a modular input.")
+	print("Python imager has a variety of commands")
 	print("")
 
 if __name__ == "__main__":
@@ -160,6 +171,11 @@ if __name__ == "__main__":
 				else:
 					print(arg + " called but information was not found!")
 					exit()
+			if(arg == "--no-load-log" or arg == "-ll"):
+				load_log = False
+			if(arg == "--no-save-log" or arg == "-ls"):
+				save_log = False
+			
 		if (dird == ""):
 			print("Directroy not set! Please set with --dir or -d!")
 			printHelp()
@@ -209,7 +225,7 @@ if __name__ == "__main__":
 			for p in range(0, amountOfTermsToGenerate):
 				finalStr = ""
 				for i in range(0, rndAmount):
-					finalStr = finalStr + strs[random.randint(0, len(strs) - 1)] + " "
+					finalStr = finalStr + strs[random.randint(0, len(strs) - 1)]
 				finalStr[:-1]
 				termsd[p] = finalStr
 			
@@ -223,7 +239,7 @@ if __name__ == "__main__":
 			print(terms)
 		else:
 			terms = masterTerms
-		frun(dird, count, terms, True)
+		frun(dird, count, terms, load_log)
 	except KeyboardInterrupt:
 		print("\nInterrupted... Writing leftovers to log file.")
 		writelog(dird)
