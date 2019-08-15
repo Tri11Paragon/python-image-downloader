@@ -114,8 +114,21 @@ def frun(dird, limit, terms, loadLog):
 		exit()
 
 def printHelp():
-	print("Python imager has a variety of commands")
-	print("")
+	print("__________         __  .__                    .___                                     ")
+	print("\______   \___.___/  |_|  |__   ____   ____   |   | _____ _____    ____   ___________  ")
+	print(" |     ___<   |  \   __|  |  \ /  _ \ /    \  |   |/     \\__   \  / ___\_/ __ \_  __ \ ")
+	print(" |    |    \___  ||  | |   Y  (  <_> |   |  \ |   |  Y Y  \/ __ \/ /_/  \  ___/|  | \/ ")
+	print(" |____|    / ____||__| |___|  /\____/|___|  / |___|__|_|  (____  \___  / \___  |__|    ")
+	print("           \/               \/            \/            \/     \/_____/      \/        ")
+	print("A names.txt file needs to be placed inside the running directory, or inside the download directory.")
+	print("If a names.txt file is not found in either of these diirectories then the command --terms must be used.")
+	print("A log file will be created inside the run directory which allows the script to resume operation if exited before finishing the download. \n")
+	print("--dir/-d				Sets the directoy for the images to be downloaded to. Usage: --dir $DIRECTORY")
+	print("--count/-c				Sets the number of images per generated search term. Usage: --count $NUMBER")
+	print("--rand/-r/--random			Sets whether or not to generate the search terms. Includes a number that indicates the number of words to add per term. Usage: --rand $NUMBER")
+	print("--terms/-t/--term			Sets what terms to be searched, if not using a names.txt inside the image download directory or run directory. Usage: --terms $TERM $TERM $TERM")
+	print("--garn/-g				Sets a word that is always at the end of the search term. Usage: --garn $TERM")
+	print("--no-save-log/--ls/--ll			Prevents the saving of progress to the log file")
 
 if __name__ == "__main__":
 	try:
